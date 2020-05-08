@@ -1,4 +1,4 @@
-#include<iostream>
+#include <iostream>
 
 typedef void (*FUN)(void);
 
