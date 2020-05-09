@@ -1,6 +1,7 @@
 //
 // Created by luc on 2020/5/9.
 //
+#include <stdlib.h>
 
 void get_coords(float * coords)
 {
