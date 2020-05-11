@@ -3,11 +3,12 @@ import os
 env = Environment(CCFLAGS = ['-std=c++11', '-g'])
 Export( 'env' )
 
-practices = [
-    'cpp_vtable'
-]
+dirs_iter = os.walk(".", topdown=False)
+first = last = next(dirs_iter)
+for last in dirs_iter:
+    pass
 
-scons_scripts = [ os.path.join(p, 'SConscript') for p in practices ]
+sc_scripts = [ os.path.join(p, 'SConscript') for p in last[1] if os.path.exists(os.path.join(p, 'SConscript')) ]
 
-SConscript(scons_scripts)
+SConscript(sc_scripts)
 

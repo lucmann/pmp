@@ -1,0 +1,3 @@
+Import( 'env' )
+
+env.Program('x64_sse', ['x64_sse.c'])
