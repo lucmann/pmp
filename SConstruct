@@ -1,6 +1,6 @@
 import os
 
-env = Environment(CCFLAGS = ['-std=c++11', '-g'])
+env = Environment(CCFLAGS = '-g')
 Export( 'env' )
 
 dirs_iter = os.walk(".", topdown=False)
