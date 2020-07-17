@@ -1,7 +1,0 @@
-Import( 'env' )
-
-env.Program('x64_sse', ['x64_sse.c'])
-
-env.Install('#bin', 'x64_sse')
-env.Alias('install', '#bin')
-
