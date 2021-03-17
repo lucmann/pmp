@@ -3,44 +3,29 @@
 #include <chrono>
 #include <thread>
 #include <sys/resource.h>
+#include <errno.h>
+#include <unistd.h>
+#include <sys/types.h>
 
 
 void* hello(void* s)
 {
-    int i, ret;
-    int policy;
-    int old_prio, new_prio;
-    int max_prio, min_prio;
-    struct sched_param param;
-    std::chrono::seconds sec(2);
+    int i, j;
+    pid_t tid;
+    struct rlimit limit;
 
-    ret = pthread_getschedparam(pthread_self(), &policy, &param);
+    limit.rlim_cur = 40;
+    limit.rlim_max = 40;
 
-    if (ret) {
-        std::cout << "Error: " << ret << " failed to get scheduling parameters\n";
-    }
+    setrlimit(RLIMIT_NICE, &limit);
 
-    std::cout << policy << " " << param.sched_priority <<'\n';
+    tid = gettid();
+    setpriority(PRIO_PROCESS, tid, -20);
 
-    param.sched_priority = 1;
-    ret = pthread_setschedparam(pthread_self(), policy, &param);
+    std::cout << "thread " << tid << " : priority " << getpriority(PRIO_PROCESS, tid) << '\n';
 
-    old_prio = getpriority(PRIO_PROCESS, pthread_self());
-    std::cout << "priority: " << old_prio <<'\n';
-
-    max_prio = sched_get_priority_max(SCHED_OTHER); 
-    min_prio = sched_get_priority_min(SCHED_OTHER); 
-    std::cout << "maximum priority: " << max_prio << ", minimum priority: " << min_prio << '\n';
-
-    if (ret) {
-        std::cout << "Error: " << ret << " failed to set scheduling parameters\n";
-    }
-
-    ret = pthread_getschedparam(pthread_self(), &policy, &param);
-
-    for (i = 0; i < 10; i++) {
-        std::cout << "hello! " << (char *)s << policy << " " << param.sched_priority <<'\n';
-        std::this_thread::sleep_for(sec);
+    while (1) {
+        std::cout << "==================== child thread =====================" << tid << '\n';
     }
 
     return 0;
@@ -49,9 +34,17 @@ void* hello(void* s)
 int main()
 {
     pthread_t tid;
+    pthread_attr_t attr;
+    struct sched_param param;
+
     int ret;
-    int i;
-    std::chrono::seconds sec(1);
+
+    pthread_attr_init(&attr);
+    param.sched_priority = 1;
+
+    pthread_attr_setschedpolicy(&attr, SCHED_RR);
+    pthread_attr_setinheritsched(&attr, PTHREAD_EXPLICIT_SCHED);
+    pthread_attr_setschedparam(&attr, &param);
 
     ret = pthread_create(&tid, nullptr, hello, const_cast<char *>("World"));
 
@@ -59,9 +52,10 @@ int main()
         std::cout << "Error " << ret << " : cannot create new thread.\n";
     }
 
-    for (i = 0; i < 10; i++) {
-        std::cout << "I am main thread\n";
-        std::this_thread::sleep_for(sec);
+    tid = gettid();
+
+    while (1) {
+        std::cout << "main thread " << tid << " exit\n";
     }
 
     return 0;
