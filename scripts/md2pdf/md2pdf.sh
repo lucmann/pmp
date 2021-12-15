@@ -23,13 +23,14 @@ done < $zh_fonts_file
 
 if command -v pandoc > /dev/null 2>&1; then
     pandoc --pdf-engine=xelatex \
+        --resource-path=${1%%.*} \
+        --toc \
         -V CJKmainfont="$CJK_MAIN_FONT" \
         -V colorlinks=true \
         -V linkcolor=blue \
-        --toc \
         -N \
-        $1 \
-        -o ${1/%md/pdf}
+        -o ${1/%md/pdf} \
+        $1
 else
     echo "pandoc not found"
     exit 2
