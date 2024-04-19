@@ -22,7 +22,7 @@ def search_fps(regex, text, matched=0):
     m = r.search(text)
 
     if m is None:
-        return 0.0
+        return None
 
     return float(m.group(0))
 
@@ -42,8 +42,10 @@ def run(args):
                 break
 
             if output:
-                n += 1
-                score += search_fps(' \d+.\d{3,} ', output)
+                result = search_fps(' \d+.\d{3,} ', output)
+                if result is not None:
+                    n += 1
+                    score += result
 
             # print(n) # debugging
             sys.stdout.write(output)
