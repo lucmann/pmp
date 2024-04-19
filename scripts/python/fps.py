@@ -4,7 +4,9 @@
 #
 # SPDX-License-Identifier: GPL-2.0
 
+import os
 import re
+import signal
 import subprocess
 import sys
 from rich import print as rprint
@@ -46,8 +48,9 @@ def run(args):
     except OSError as e:
         if e.errno != errno.ENOENT and e.errno != errno.EACCESS:
             raise
-    except subprocess.CalledProcessError:
-        pass
+    except KeyboardInterrupt:
+        # Note that signal.CTRL_C_EVENT is only available on Windows
+        os.kill(process.pid, signal.SIGTERM)
 
     return score / n
 
