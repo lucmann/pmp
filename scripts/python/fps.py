@@ -42,7 +42,7 @@ def run(args):
                 break
 
             if output:
-                result = search_fps(' \d+.\d{3,} ', output)
+                result = search_fps(' \d+\.\d{3,} ', output)
                 if result is not None:
                     n += 1
                     score += result
