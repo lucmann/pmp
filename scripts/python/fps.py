@@ -9,7 +9,12 @@ import re
 import signal
 import subprocess
 import sys
-from rich import print as rprint
+
+try:
+    from rich import print as rprint
+except ModuleNotFoundError:
+    print("module rich not installed!")
+    sys.exit(1)
 
 
 def search_fps(regex, text, matched=0):
