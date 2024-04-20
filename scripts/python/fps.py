@@ -51,15 +51,15 @@ def run(args):
 
             # print(n) # debugging
 
-
+        return score / n
     except OSError as e:
         if e.errno != errno.ENOENT and e.errno != errno.EACCESS:
             raise
     except KeyboardInterrupt:
         # Note that signal.CTRL_C_EVENT is only available on Windows
         os.kill(process.pid, signal.SIGTERM)
-
-    return score / n
+    except ZeroDivisionError:
+        return 0.0
 
 
 def show_fps(fps):
