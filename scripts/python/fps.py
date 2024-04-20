@@ -46,10 +46,10 @@ def run(args):
                 if result is not None:
                     n += 1
                     score += result
+                    sys.stdout.write(output)
+                    sys.stdout.flush()
 
             # print(n) # debugging
-            sys.stdout.write(output)
-            sys.stdout.flush()
 
 
     except OSError as e:
