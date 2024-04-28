@@ -3,10 +3,12 @@ cmake_minimum_required(VERSION 3.12)
 set(PROJECT_VERSION "0.1.0")
 project(PMP VERSION ${PROJECT_VERSION} LANGUAGES C CXX)
 
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
+
 option(PMP_BUILD_RUST "Enable building of Rust practices" OFF)
 
 if (PMP_BUILD_RUST)
-    set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/CMakeRust/cmake")
+    list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/CMakeRust/cmake")
     enable_language(Rust)
     include(CMakeCargo)
 
@@ -16,6 +18,9 @@ if (PMP_BUILD_RUST)
         message(WARNING "Not found Rust compiler")
     endif()
 endif()
+
+# include 'add_target' function
+include(target_helper)
 
 if (CMAKE_C_COMPILER)
     add_subdirectory(c)
