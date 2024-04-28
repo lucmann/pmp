@@ -58,6 +58,7 @@ def run(args):
     except KeyboardInterrupt:
         # Note that signal.CTRL_C_EVENT is only available on Windows
         os.kill(process.pid, signal.SIGINT)
+        return score / n
     except ZeroDivisionError:
         return 0.0
 
