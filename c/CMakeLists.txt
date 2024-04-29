@@ -1,1 +1,1 @@
-set(CMAKE_C_STANDARD 99)
+add_target_c(test_fork)

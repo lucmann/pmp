@@ -36,3 +36,23 @@ function(add_target)
     endif()
 endfunction()
 
+macro(add_target_c name)
+    add_target(
+        NAME ${name}
+        LANGUAGE C
+        DESCRIPTION ""
+        DIRECTORY ""
+        FILES ""
+    )
+endmacro()
+
+macro(add_target_cxx name)
+    add_target(
+        NAME ${name}
+        LANGUAGE CXX
+        DESCRIPTION ""
+        DIRECTORY ""
+        FILES ""
+    )
+endmacro()
+
