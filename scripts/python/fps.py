@@ -10,12 +10,6 @@ import signal
 import subprocess
 import sys
 
-try:
-    from rich import print as rprint
-except ModuleNotFoundError:
-    print("module rich not installed!")
-    sys.exit(1)
-
 
 def search_fps(regex, text, matched=0):
     r = re.compile(regex)
@@ -64,7 +58,7 @@ def run(args):
 
 
 def show_fps(fps):
-    rprint("[bold green]Average FPS:[/bold green] %.3f" % fps)
+    print("\033[92m {}\033[00m".format("Average FPS: %.3f" % fps))
 
 
 if __name__ == '__main__':
