@@ -5,7 +5,7 @@ Q = @
 
 export Q
 
-subdirs := c cpp
+SUBDIRS = c cpp
 
 # Functions for Conditionals
 #
@@ -45,14 +45,22 @@ foreach-subdir-clean := $(if $(subdirs), \
 # It turns out that I misunderstood that. The reason why the call function here
 # didn't work before is simply that the variable is expanded immediately due to
 # improper choice for variable assignment signs (should be '=' instead of ':=')
+#
+# Though I know better about call function in this example, it is not best practice
+# to call foreach in recursive use of make
+# See https://www.gnu.org/software/make/manual/make.html#Phony-Targets
 foreach-subdir-make = $(if $(subdirs), \
 							$(foreach d, $(subdirs), \
 							$(MAKE) -C $(d) $(1); cd ..))
 
-all: 
-	$(Q)$(call foreach-subdir-make)
+subdirs: $(SUBDIRS)
+
+$(SUBDIRS):
+	$(MAKE) -C $@
 
 clean:
-	$(Q)$(call foreach-subdir-make,clean)
+	$(Q)for dir in $(SUBDIRS); do \
+		$(MAKE) -C $$dir clean; \
+	done
 
-.PHONY: all clean
+.PHONY: subdirs all clean $(SUBDIRS)
