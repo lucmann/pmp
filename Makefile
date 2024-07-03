@@ -41,7 +41,11 @@ foreach-subdir-clean := $(if $(subdirs), \
 # as you expect.
 # Hence I guess it is not good idea to mix `call` together with `foreach` or
 # `if` to use like that
-foreach-subdir-make := $(if $(subdirs), \
+#
+# It turns out that I misunderstood that. The reason why the call function here
+# didn't work before is simply that the variable is expanded immediately due to
+# improper choice for variable assignment signs (should be '=' instead of ':=')
+foreach-subdir-make = $(if $(subdirs), \
 							$(foreach d, $(subdirs), \
 							$(MAKE) -C $(d) $(1); cd ..))
 
@@ -50,6 +54,5 @@ all:
 
 clean:
 	$(Q)$(call foreach-subdir-make,clean)
-	$(Q)$(foreach-subdir-clean)  # fallback
 
 .PHONY: all clean
