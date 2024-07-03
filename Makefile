@@ -5,7 +5,7 @@ Q = @
 
 export Q
 
-subdirs := c cxx
+subdirs := c cpp
 
 # Functions for Conditionals
 #
