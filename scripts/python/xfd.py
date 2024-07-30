@@ -14,6 +14,7 @@ from retry import retry
 # Create a Unix Domain socket with address family AF_UNIX (note that AF_INET by default)
 
 SOCKET_BINDING_ADDR = "/tmp/sock"
+MAX_FD_NR = 32
 
 class Client(threading.Thread):
     def __init__(self):
@@ -21,6 +22,7 @@ class Client(threading.Thread):
         self.sock = socket.socket(socket.AF_UNIX)
 
     def send_fds(self, buffer, fds):
+        print("Sending {}".format(fds))
         return self.sock.sendmsg(buffer, [(socket.SOL_SOCKET, socket.SCM_RIGHTS, array.array("i", fds))])
 
     @retry(tries=100, delay=1)
@@ -35,12 +37,11 @@ class Client(threading.Thread):
         print("Connected")
 
         # Obtain two file descriptors both in read only mode
-        fd1 = os.open("/tmp/news1.txt", os.O_RDONLY)
-        fd2 = os.open("/tmp/news2.txt", os.O_RDONLY)
+        fd_li = [os.open("/tmp/news{}.txt".format(i), os.O_RDONLY | os.O_CREAT) for i in range(0, MAX_FD_NR)]
 
         msg = "hi"
         msgb = bytes(msg, 'ascii')
-        self.send_fds([msgb], [fd1, fd2])
+        self.send_fds([msgb], fd_li)
 
         while True:
             data = self.sock.recv(1024)
@@ -68,6 +69,8 @@ class Server(threading.Thread):
         for cmsg_level, cmsg_type, cmsg_data in ancillary:
             if cmsg_level == socket.SOL_SOCKET and cmsg_type == socket.SCM_RIGHTS:
                 fds.frombytes(cmsg_data[:len(cmsg_data) - (len(cmsg_data) % fds.itemsize)])
+
+        print("Recving {}".format(list(fds)))
         return msg, list(fds)
 
     def run(self):
@@ -80,9 +83,9 @@ class Server(threading.Thread):
             sock, addr = self.sock.accept()
 
             while True:
-                msg, fds = self.recv_fds(sock, 1024, 2)
+                msg, fds = self.recv_fds(sock, 1024, MAX_FD_NR)
 
-                for fd in fds:
+                for fd in fds[:3]:
                     print(os.read(fd, 8))
 
                 sock.send("Great ... have read all news".encode())
