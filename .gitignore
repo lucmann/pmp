@@ -1,4 +1,6 @@
 .idea/
 .sconsign.dblite
 *.out
+c/test*
+!c/test*.c
 build
