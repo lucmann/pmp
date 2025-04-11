@@ -16,6 +16,7 @@ Learning Berkeley Packet Filter
 # Hammers
 
 - $ sudo bpftrace -lv 'tracepoint:drm:*'
+```
 tracepoint:drm:drm_vblank_event
     int crtc
     unsigned int seq
@@ -29,3 +30,4 @@ tracepoint:drm:drm_vblank_event_queued
     struct drm_file * file
     int crtc
     unsigned int seq
+```
