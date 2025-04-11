@@ -5,6 +5,8 @@ lib_dir := $(kdir)/tools/lib/bpf
 CFLAGS += -I$(inc_dir)
 LDFLAGS += -L$(lib_dir) -lbpf
 
+CC = clang
+
 all: loader kill.o
 
 loader: load.c
