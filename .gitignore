@@ -1,6 +1,8 @@
 .idea/
 .sconsign.dblite
 *.out
+bpf/loader
+bpf/*.o
+build
 c/test*
 !c/test*.c
-build
