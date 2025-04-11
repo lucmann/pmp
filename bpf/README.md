@@ -12,3 +12,20 @@ Learning Berkeley Packet Filter
 - $ sudo cat /sys/kernel/debug/tracing/trace_pipe
 - $ sudo ./loader kill.o &
 - $ kill -9 PID
+
+# Hammers
+
+- $ sudo bpftrace -lv 'tracepoint:drm:*'
+tracepoint:drm:drm_vblank_event
+    int crtc
+    unsigned int seq
+    ktime_t time
+    bool high_prec
+tracepoint:drm:drm_vblank_event_delivered
+    struct drm_file * file
+    int crtc
+    unsigned int seq
+tracepoint:drm:drm_vblank_event_queued
+    struct drm_file * file
+    int crtc
+    unsigned int seq
