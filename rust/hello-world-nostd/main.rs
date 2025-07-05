@@ -9,22 +9,25 @@ fn panic(_: &PanicInfo) -> ! {
 }
 
 #[no_mangle]
-pub extern "C" fn _start() {
+#[cfg(target_arch = "x86_64")]
+pub unsafe extern "C" fn _start() {
     let message = b"Hello, world!\n";
     let fd: usize = 1; // File descriptor for stdout
-    let syscall_no: usize = 1; // Syscall number for write in Linux
-    unsafe {
-        // Use inline asm macro to perform the syscall
-        core::arch::asm!(
-            "syscall",
-            in("rax") syscall_no, // syscall number
-            in("rdi") fd,         // file descriptor
-            in("rsi") message.as_ptr(), // pointer to the message
-            in("rdx") message.len(), // length of the message
-            out("rcx") _, out("r11") _,
-        );
-    }
+    let syscall_no: usize = 1; // Syscall number for write in Linux x86_64
 
-    loop {} // Loop forever to avoid segfault since _start() is expected
-            // to never return in a no_std environment
+    // Use inline asm macro to perform the syscall
+    core::arch::asm!(
+        "syscall",
+        in("rax") syscall_no, // syscall number
+        in("rdi") fd,         // file descriptor
+        in("rsi") message.as_ptr(), // pointer to the message
+        in("rdx") message.len(), // length of the message
+    );
+
+    // Exit the program with status code 0
+    core::arch::asm!(
+        "syscall",
+        in("rax") 60, // syscall number for exit
+        in("rdi") 0,  // exit status code
+    );
 }
