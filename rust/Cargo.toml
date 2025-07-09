@@ -1,14 +1,18 @@
-[package]
-name = "rust"
+# A workspace without explicit packages is called virtual workspace
+# This is typically useful if you want to keep all the packages organized in separate directories
+[workspace]
+resolver = "3"
+members = [
+    "src/hello_world",
+    "src/hello_world_nostd"
+]
+
+[workspace.package]
 version = "0.1.0"
 edition = "2024"
 
-[dependencies]
+[profile.dev]
+panic = "abort"
 
-[[bin]]
-name = "hello"
-path = "src/hello-world/main.rs"
-
-[[bin]]
-name = "hello_nostd"
-path = "src/hello-world-nostd/main.rs"
+[profile.release]
+panic = "abort"
