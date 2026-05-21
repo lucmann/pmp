@@ -7,8 +7,14 @@ export Q
 
 SUBDIRS = c cpp
 
+# substitution reference
+dirs := $(SUBDIRS)
+$(info $(dirs))
+dirs := $(dirs:=file)
+$(info $(dirs))
+
 # Recursive wildcard function based on GNU make's wildcard
-rwildcard = $(foreach d,$(wildcard $(1:=/*)),$(call rwildcard,$d,$2)$(filter $(subst *,%,$2),$d))
+rwildcard = $(foreach d,$(wildcard $(1:%=%/*)),$(call rwildcard,$d,$2)$(filter $(subst *,%,$2),$d))
 
 # Functions for Conditionals
 #
