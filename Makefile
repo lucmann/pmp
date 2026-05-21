@@ -7,6 +7,9 @@ export Q
 
 SUBDIRS = c cpp
 
+# Recursive wildcard function based on GNU make's wildcard
+rwildcard = $(foreach d,$(wildcard $(1:=/*)),$(call rwildcard,$d,$2)$(filter $(subst *,%,$2),$d))
+
 # Functions for Conditionals
 #
 # $(if condition, then-part[, else-part])
@@ -63,4 +66,11 @@ clean:
 		$(MAKE) -C $$dir clean; \
 	done
 
-.PHONY: subdirs all clean $(SUBDIRS)
+# Get the list of .cpp files using the rwildcard function and normalize whitespace with awk
+find: 
+	$(Q)echo "Finding all .cpp files in current directory and subdirectories:"
+	$(Q)echo "$(shell echo '$(call rwildcard,.,*.cpp)' | awk '{$$1=$$1};1')" 
+	$(Q)echo "$(call rwildcard,.,*.cpp)"
+	$(Q)echo "$(shell echo '$(call rwildcard,.,*.cpp)' | awk '{$$1=$$1};1' | sed 's/ /\\n/g')" 
+
+.PHONY: subdirs all clean find $(SUBDIRS)
